@@ -123,7 +123,7 @@ public class Graphe {
     public void filterRelevant () {
         ArrayList<Edge> listTemp = new ArrayList<Edge>();
         for (Edge edge: listEdge){
-            if (edge.getType().equals("primary") || edge.getType().equals("secondary") || edge.getType().equals("tertiary")){
+            if (edge.getType().equals("primary") || edge.getType().equals("tertiary") || edge.getType().equals("secondary") || edge.getType().equals("trunk") || edge.getType().equals("motorway")){
                 listTemp.add(edge);
             }
         }
