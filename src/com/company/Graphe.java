@@ -20,7 +20,7 @@ public class Graphe {
         listNode = new HashMap<>();
         this.distInner = distInner;
         this.distOuter = distOuter;
-        centerPoint = new Coord( -0.763056, 48.075514);
+        centerPoint = new Coord( 48.075514, -0.763056);
         this.initGraph();
         this.fillNode();
         System.out.println(this.distanceCoord(new Coord(48.758926, 1.877370), new Coord(48.759067, 1.878261)));
@@ -79,8 +79,8 @@ public class Graphe {
                         for (int a=0; a<arrayCoord.length(); a++) {
                             JSONArray coArray = arrayCoord.getJSONArray(a);
                             Coord coord = new Coord();
-                            coord.setLatitude(coArray.getDouble(0));
-                            coord.setLongitude(coArray.getDouble(1));
+                            coord.setLatitude(coArray.getDouble(1));
+                            coord.setLongitude(coArray.getDouble(0));
                             edgeTemp.getPointList().add(coord);
                         }
                         listEdge.add(edgeTemp);
@@ -88,8 +88,8 @@ public class Graphe {
                         Node nodeTemp = new Node();
                         Coord coord = new Coord();
                         nodeTemp.setId(jTempProp.getInt("id"));
-                        coord.setLatitude(arrayCoord.getDouble(0));
-                        coord.setLongitude(arrayCoord.getDouble(1));
+                        coord.setLatitude(arrayCoord.getDouble(1));
+                        coord.setLongitude(arrayCoord.getDouble(0));
                         nodeTemp.setPos(coord);
                         listNode.put(nodeTemp.getId(), nodeTemp);
                     }
@@ -153,15 +153,14 @@ public class Graphe {
             System.out.println("long edge : " + edge.getSrc().getPos().getLongitude() + " long center : "+ centerPoint.getLongitude());
             System.out.println("distSrc = " + distSrc);
             System.out.println("distDst = " + distDst);*/
-            if (    distSrc > distInner && distSrc < distOuter
-                ||
-                    distDst > distInner && distDst < distOuter
-            ) {
+            if (    (distSrc > distInner && distSrc < distOuter) || (distDst > distInner && distDst < distOuter) ) {
                 listTemp.add(edge);
             }
         }
         listEdge = listTemp;
     }
+
+
 
 
     public void printEdgeList() {
@@ -188,7 +187,7 @@ public class Graphe {
             for (Map.Entry node: listNode.entrySet()){
                 Node nodeTmp = (Node) node.getValue();
                 fileWriter.write(
-                    "\t \t ["+ nodeTmp.getPos().getLatitude()+ ", "+ nodeTmp.getPos().getLongitude() +"]");
+                    "\t \t ["+ nodeTmp.getPos().getLongitude()+ ", "+ nodeTmp.getPos().getLatitude() +"]");
                 i++;
                 if (i!=listNode.size()){
                     fileWriter.write(",\n");
@@ -216,7 +215,7 @@ public class Graphe {
                         "    \"coordinates\": [\n");
                 int e = 0;
                 for (Coord coord: edge.getPointList()){
-                    fileWriter.write("\t\t["+coord.getLatitude()+","+coord.getLongitude()+"]");
+                    fileWriter.write("\t\t["+coord.getLongitude()+","+coord.getLatitude()+"]");
                     e++;
                     if (e!=edge.getPointList().size()){
                         fileWriter.write(",\n");
@@ -237,7 +236,8 @@ public class Graphe {
         }
     }
 
-    public void writeEdgeV2() {
+    public void writeEdgeEndToEnd() {
+        System.out.println("V2");
         int i = 0;
         try {
             FileWriter fileWriter = new FileWriter("web/edges.js");
@@ -247,8 +247,8 @@ public class Graphe {
                         "{\n" +
                         "    \"type\": \"LineString\",\n" +
                         "    \"coordinates\": [");
-                fileWriter.write("["+edge.getPointList().get(0).getLatitude()+","+edge.getPointList().get(0).getLongitude()+"], ");
-                fileWriter.write("["+edge.getPointList().get(edge.getPointList().size()-1).getLatitude()+","+edge.getPointList().get(edge.getPointList().size()-1).getLongitude()+"]");
+                fileWriter.write("["+edge.getSrc().getPos().getLongitude()+","+edge.getSrc().getPos().getLatitude()+"], ");
+                fileWriter.write("["+edge.getDest().getPos().getLongitude()+","+edge.getDest().getPos().getLatitude()+"]");
                 fileWriter.write("   ]\n");
                 fileWriter.write("}\n");
                 i++;

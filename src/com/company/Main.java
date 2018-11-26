@@ -19,6 +19,8 @@ public class Main {
         graphe.writeEdge();
         graphe.writeNodes();
 
+        //graphe.testDist();
+
 
         System.out.println("IT WORKS");
 
