@@ -14,7 +14,7 @@ public class Graphe {
     private double distOuter;
     private double distInner;
 
-
+    // Constructeur, prends les rayons des deux cercles en paramètre
     public Graphe(double distOuter, double distInner){
         listEdge = new ArrayList<>();
         listNode = new HashMap<>();
@@ -38,6 +38,7 @@ public class Graphe {
         this.listEdge = listEdge;
     }
 
+    // Parse le fichier JSON en entrée, rempli les structures listEdge et listNode
     private void initGraph(){
         JSONObject base;
         JSONArray features;
@@ -101,16 +102,7 @@ public class Graphe {
         }
     }
 
-    public void filterPrimary () {
-        ArrayList<Edge> listTemp = new ArrayList<Edge>();
-        for (Edge edge : listEdge) {
-            if (edge.getType().equals("primary")) {
-                listTemp.add(edge);
-            }
-        }
-        listEdge = listTemp;
-    }
-
+    // Supprimes toutes les arrêtes qui ne sont pas des grosses routes
     public void filterRelevant () {
         ArrayList<Edge> listTemp = new ArrayList<Edge>();
         for (Edge edge: listEdge){
@@ -121,6 +113,7 @@ public class Graphe {
         listEdge = listTemp;
     }
 
+    // Supprimes dans la liste des noeuds, ceux qui ne sont pas utilisés par les arrêtes
     public void filterNodeEdge () {
 
         HashMap<Integer, Node> listNodeHM = new HashMap<>();
@@ -134,7 +127,7 @@ public class Graphe {
     }
 
 
-
+    // Remplis les positions des noeuds dans les arrêtes
     private void fillNode() {
         for (Edge edge: listEdge) {
             edge.getDest().setPos(listNode.get(edge.getDest().getId()).getPos());
@@ -143,16 +136,12 @@ public class Graphe {
     }
 
 
-    // filter sur les nodes qui sont dedans
+    // filter sur les nodes qui sont entre les deux cercles
     public void filterZone() {
         ArrayList<Edge> listTemp = new ArrayList<Edge>();
         for (Edge edge: listEdge){
             double distSrc = distanceCoord(new Coord(edge.getSrc().getPos().getLatitude(), edge.getSrc().getPos().getLongitude()),  centerPoint);
             double distDst = distanceCoord(new Coord(edge.getDest().getPos().getLatitude(), edge.getDest().getPos().getLongitude()),  centerPoint);
-            /*System.out.println("lat edge : " + edge.getSrc().getPos().getLatitude() + " lat center : "+ centerPoint.getLatitude());
-            System.out.println("long edge : " + edge.getSrc().getPos().getLongitude() + " long center : "+ centerPoint.getLongitude());
-            System.out.println("distSrc = " + distSrc);
-            System.out.println("distDst = " + distDst);*/
             if (    (distSrc > distInner && distSrc < distOuter) || (distDst > distInner && distDst < distOuter) ) {
                 listTemp.add(edge);
             }
@@ -162,15 +151,17 @@ public class Graphe {
 
 
 
-
+    // affiche la liste des arrêtes dans la console
     public void printEdgeList() {
         System.out.println(listEdge);
     }
 
+    // Affiche la liste des noeuds dans la  console
     public void printNodeList() {
         System.out.println(listNode);
     }
 
+    // écrit dans le fichier nodes.js la liste des points à afficher
     public void writeNodes() {
         int i = 0;
         try {
@@ -203,6 +194,7 @@ public class Graphe {
         }
     }
 
+    // écrit dans le fichier edges la liste des arrêtes à afficher en utilisant toutes les coordonnées entres les src et dst pour plus de précision
     public void writeEdge() {
         int i = 0;
         try {
@@ -236,6 +228,7 @@ public class Graphe {
         }
     }
 
+    // Ecris dans le fichier edges la liste des arrêtes à afficher en utilisant seulement les arrêtes src et dst
     public void writeEdgeEndToEnd() {
         System.out.println("V2");
         int i = 0;
@@ -265,6 +258,7 @@ public class Graphe {
         }
     }
 
+    // Supprimes le contenu des fichiers edges et nodes
     public void cleanFiles (){
         try {
             FileWriter fileWriter = new FileWriter("web/edges.js");
@@ -277,6 +271,7 @@ public class Graphe {
 
     }
 
+    // Calcul la distance entre deux coordonnées
     private double distanceCoord (Coord A, Coord B) {
         return Math.acos( (Math.sin(Math.toRadians(A.getLatitude())) * Math.sin(Math.toRadians(B.getLatitude())))
                 + (Math.cos(Math.toRadians(A.getLatitude())) * Math.cos(Math.toRadians(B.getLatitude()))
