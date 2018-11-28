@@ -8,24 +8,21 @@ public class Edge {
     private Node dest;
     private String type;
     private String name;
+    private String border;
+    private int dist = 1;
     private ArrayList<Coord> pointList;
 
-    @Override
-    public String toString() {
-        return "Edge{" +
-                "id=" + id +
-                ", src=" + src +
-                ", dest=" + dest +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", pointList=" + pointList +
-                "} \n";
-    }
 
     public Edge(){
         this.src = new Node();
         this.dest = new Node();
         this.pointList = new ArrayList<>();
+    }
+
+    public Edge (Node src, Node dst) {
+        this.src = src;
+        this.dest = dst;
+        this.border = "link";
     }
 
     public Edge(int id, Node src, Node dest, String type, String name) {
@@ -82,5 +79,33 @@ public class Edge {
 
     public void setPointList(ArrayList<Coord> pointList) {
         this.pointList = pointList;
+    }
+    public String getBorder() {
+        return border;
+    }
+
+    public void setBorder(String border) {
+        this.border = border;
+    }
+
+    public int getDist() {
+        return dist;
+    }
+
+    public void setDist(int dist) {
+        this.dist = dist;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "id=" + id +
+                ", src=" + src +
+                ", dest=" + dest +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", border='" + border + '\'' +
+                ", pointList=" + pointList +
+                "}\n";
     }
 }

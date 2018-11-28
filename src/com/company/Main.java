@@ -16,9 +16,11 @@ public class Main {
         System.out.println("Size after" + graphe.getListEdge().size());
         graphe.filterNodeEdge();
 
-
         graphe.writeEdges("web/edges.js");
         graphe.writeNodes("web/nodes.js");
+
+
+        BFS bfs = new BFS(graphe);
 
         //graphe.testDist();
 

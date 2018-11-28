@@ -8,6 +8,11 @@ public class Coord {
 
     }
 
+    public Coord(Coord coord) {
+        this.latitude = coord.getLatitude();
+        this.longitude = coord.getLongitude();
+    }
+
     public Coord(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;

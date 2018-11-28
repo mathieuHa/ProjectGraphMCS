@@ -13,11 +13,16 @@ public class Graphe {
 	
 	// Champs
     private ArrayList<Edge> listEdge;
+
+    private Integer maxFlow;
+
     private HashMap<Integer, Node> listNode;
-    private ArrayList<Node> listNodeTest;
     private Coord centerPoint;
     private double distOuter;
     private double distInner;
+
+    private Node nodeDst;
+    private Node nodeSrc;
 
     // Constructeur, prends les rayons des deux cercles en paramètre, ainsi que les coordonnées du centre d'une ville
     public Graphe(double distOuter, double distInner, Coord cityCenter, String jsonFileName){
@@ -28,11 +33,21 @@ public class Graphe {
         centerPoint = cityCenter;
         this.initGraph(jsonFileName);
         this.fillNode();
-        System.out.println(this.distanceCoord(new Coord(48.758926, 1.877370), new Coord(48.759067, 1.878261)));
+        this.nodeDst = new Node();
+        this.nodeSrc = new Node();
+
     }
 
     public Graphe(ArrayList<Edge> listEdge) {
         this.listEdge = listEdge;
+    }
+
+    public Graphe(Graphe graphe) {
+        this.listEdge = new ArrayList<>(graphe.getListEdge());
+        this.listNode = new HashMap<>(graphe.getListNode());
+        this.nodeSrc = new Node(graphe.getNodeSrc());
+        this.nodeDst = new Node(graphe.getNodeDst());
+
     }
 
     public ArrayList<Edge> getListEdge() {
@@ -128,9 +143,13 @@ public class Graphe {
         HashMap<Integer, Node> listNodeHM = new HashMap<>();
 
         for (Edge edge : listEdge) {
-            listNodeHM.put(edge.getSrc().getId(), edge.getSrc());
-            listNodeHM.put(edge.getDest().getId(), edge.getDest());
+            if (!edge.getBorder().equals("link")){
+                listNodeHM.put(edge.getSrc().getId(), edge.getSrc());
+                listNodeHM.put(edge.getDest().getId(), edge.getDest());
+            }
         }
+        listNodeHM.put(0, nodeSrc);
+        listNodeHM.put(10000, nodeDst);
         listNode = listNodeHM;
         System.out.println("Size after " +  listNode.size());
     }
@@ -148,15 +167,35 @@ public class Graphe {
     // Filtre sur les nodes qui sont entre les deux cercles
     public void filterZone() {
         ArrayList<Edge> listTemp = new ArrayList<Edge>();
+        ArrayList<Edge> listEdgeSide = new ArrayList<>();
         for (Edge edge: listEdge){
             double distSrc = distanceCoord(new Coord(edge.getSrc().getPos().getLatitude(), edge.getSrc().getPos().getLongitude()),  centerPoint);
             double distDst = distanceCoord(new Coord(edge.getDest().getPos().getLatitude(), edge.getDest().getPos().getLongitude()),  centerPoint);
             if (    (distSrc > distInner && distSrc < distOuter) || (distDst > distInner && distDst < distOuter) ) {
                 listTemp.add(edge);
+                if ((distSrc > distInner && distSrc < distOuter) && (distDst > distInner && distDst < distOuter)) {
+                    edge.setBorder("in");
+                } else if ((distSrc > distInner && distSrc < distOuter)) {
+                    edge.setBorder("dst");
+                    if (distDst < distInner) {
+                        listEdgeSide.add(new Edge(nodeSrc, edge.getDest()));
+                    } else if (distDst > distOuter) {
+                        listEdgeSide.add(new Edge(edge.getDest(), nodeDst));
+                    }
+                } else if ((distDst > distInner && distDst < distOuter)) {
+                    edge.setBorder("src");
+                    if (distSrc < distInner) {
+                        listEdgeSide.add(new Edge(nodeSrc, edge.getSrc()));
+                    } else if (distSrc > distOuter) {
+                        listEdgeSide.add(new Edge(edge.getSrc(), nodeDst));
+                    }
+                }
             }
         }
+        listTemp.addAll(listEdgeSide);
         listEdge = listTemp;
     }
+
 
 
 
@@ -209,23 +248,25 @@ public class Graphe {
 
             fileWriter.write("var edges = [");
             for (Edge edge: listEdge){
-                fileWriter.write("" +
-                        "{\n" +
-                        "    \"type\": \"LineString\",\n" +
-                        "    \"coordinates\": [\n");
-                int e = 0;
-                for (Coord coord: edge.getPointList()){
-                    fileWriter.write("\t\t["+coord.getLongitude()+","+coord.getLatitude()+"]");
-                    e++;
-                    if (e!=edge.getPointList().size()){
-                        fileWriter.write(",\n");
+                if (!edge.getBorder().equals("link")){ // on écrit pas les arrêtes vers la source et le puit
+                    fileWriter.write("" +
+                            "{\n" +
+                            "    \"type\": \"LineString\",\n" +
+                            "    \"coordinates\": [\n");
+                    int e = 0;
+                    for (Coord coord: edge.getPointList()){
+                        fileWriter.write("\t\t["+coord.getLongitude()+","+coord.getLatitude()+"]");
+                        e++;
+                        if (e!=edge.getPointList().size()){
+                            fileWriter.write(",\n");
+                        }
                     }
-                }
-                fileWriter.write("]\n");
-                fileWriter.write(" }\n");
-                i++;
-                if (i!=listEdge.size()){
-                    fileWriter.write(",");
+                    fileWriter.write("]\n");
+                    fileWriter.write(" }\n");
+                    i++;
+                    if (i!=listEdge.size()){
+                        fileWriter.write(",");
+                    }
                 }
             }
             fileWriter.write("]; \n" +
@@ -280,5 +321,28 @@ public class Graphe {
         return Math.acos( (Math.sin(Math.toRadians(A.getLatitude())) * Math.sin(Math.toRadians(B.getLatitude())))
                 + (Math.cos(Math.toRadians(A.getLatitude())) * Math.cos(Math.toRadians(B.getLatitude()))
                 * Math.cos(Math.toRadians(B.getLongitude() - A.getLongitude()) ) ) ) * 6371.0;
+    }
+
+    public HashMap<Integer, Node> getListNode() {
+        return listNode;
+    }
+
+    public void setListNode(HashMap<Integer, Node> listNode) {
+        this.listNode = listNode;
+    }
+    public Node getNodeDst() {
+        return nodeDst;
+    }
+
+    public void setNodeDst(Node nodeDst) {
+        this.nodeDst = nodeDst;
+    }
+
+    public Node getNodeSrc() {
+        return nodeSrc;
+    }
+
+    public void setNodeSrc(Node nodeSrc) {
+        this.nodeSrc = nodeSrc;
     }
 }
