@@ -1,9 +1,6 @@
 package com.company;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class Node {
     private int id;
@@ -11,6 +8,7 @@ public class Node {
     private Integer dist = Integer.MAX_VALUE;
     private Boolean mark = false;
     private Node pred;
+	private LinkedList<Edge> edges = new LinkedList<>();
 
 
     public Node(){
@@ -83,4 +81,16 @@ public class Node {
     public void setPred(Node pred) {
         this.pred = pred;
     }
+	
+	public Edge getEdge(Node node) {
+		for (Edge edge : edges)
+			if (edge.getDest().getId() == node.getId())
+				return edge;
+		System.err.println("getEdge : Node not found !");
+		return null;
+	}
+	
+	public void addEdge(Edge edge) {
+		edges.addLast(edge);
+	}
 }

@@ -196,7 +196,17 @@ public class Graphe {
         listEdge = listTemp;
     }
 
-
+	public void updateNode() {
+	
+		for (Map.Entry node: listNode.entrySet()){
+			Node nodeTmp = (Node) node.getValue();
+			
+			for (Edge edge : listEdge) {
+				if (edge.getSrc().getId() == nodeTmp.getId() || edge.getDest().getId() == nodeTmp.getId())
+					nodeTmp.addEdge(edge);
+			}
+		}
+	}
 
 
     // affiche la liste des arrêtes dans la console
