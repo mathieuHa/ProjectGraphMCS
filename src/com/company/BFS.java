@@ -2,7 +2,6 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class BFS {
 

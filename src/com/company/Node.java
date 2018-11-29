@@ -70,6 +70,8 @@ public class Node {
     public String toString() {
         return "Node{" +
                 "id=" + id +
+				", mark=" + mark +
+				", num edges=" + edges.size() +
                 ", pos=" + pos +
                 "} \n";
     }
@@ -92,5 +94,9 @@ public class Node {
 	
 	public void addEdge(Edge edge) {
 		edges.addLast(edge);
+	}
+	
+	public LinkedList<Edge> getEdges() {
+		return edges;
 	}
 }

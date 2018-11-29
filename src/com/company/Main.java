@@ -1,13 +1,18 @@
 package com.company;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Graphe graphe = new Graphe(2.5, 1, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
-        //graphe.cleanFiles();  //Pas utile : il suffit de dire qu'on overwrite quand on veut écrire en passant un false -> new FileWriter(fileName, false)
-        System.out.println("Size before" + graphe.getListEdge().size());
+	private Graphe graphe;
+	
+	public Main(){
+		graphe = new Graphe(2.5, 1, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
+	}
+	
+	public void start(){
+		System.out.println("Size before" + graphe.getListEdge().size());
 		graphe.filterRelevant();
         System.out.println("Size middle" + graphe.getListEdge().size());
         //graphe.printEdgeList();
@@ -15,52 +20,96 @@ public class Main {
         graphe.filterZone();
         System.out.println("Size after" + graphe.getListEdge().size());
         graphe.filterNodeEdge();
-		graphe.updateNode();
+		graphe.updateNodes();
 		
         graphe.writeEdges("web/edges.js");
         graphe.writeNodes("web/nodes.js");
-
-
+		
+		graphe.getNodeSrc().setId(1);
+		graphe.getNodeDst().setId(2);
+		System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
+		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
+		
         BFS bfs = new BFS(graphe);
 
         //graphe.testDist();
 
-
         System.out.println("IT WORKS");
-
-    }
-	
-	private ArrayList<Node> findPath(Node src, Node dst) {
-		return null;
 	}
 	
-	private float fordF(Node src, Node dst) {
-		int max_flow = 0, path_flow;
-		ArrayList<Node> path = null;
-		Edge edge;
+	// Remet la marque de tous les noeuds à false.
+	private void resetNodesMark() {
+		for (Map.Entry me : graphe.getListNode().entrySet()) {
+			Node node = (Node) me.getValue();
+			node.setMark(false);
+		}
+	}
+	
+	private boolean BFS(Node src, Node dst) {
+		resetNodesMark();
+		LinkedList<Node> queue = new LinkedList<>();
+		queue.offer(src);
+		src.setMark(true);
 		
+		Node node, nghbg;
+		while (!queue.isEmpty()) {
+            node = queue.poll();
+			
+			// On regarde les voisins
+			for (Edge edge : node.getEdges()) {
+				nghbg = edge.getNode(node);
+				if (!nghbg.getMark() && (edge.getCapacity() - edge.getFlow(node) > 0)) {
+					queue.offer(nghbg);
+					nghbg.setMark(true);
+					nghbg.setPred(node);
+				}
+            }
+        }
+		return dst.getMark();
+	}
+	
+	private int fordF(Node src, Node dst) {
+		int max_flow = 0, path_flow;
+		Edge edge;
+		Node node;
+		
+		int compteur = 0;
 		// Tant qu'un chemin existe, on augmente le flot
-		while (!(path = findPath(src, dst)).isEmpty()) {
+		while (BFS(src, dst)) {
+			
+			if (compteur%1000000 == 0)
+				System.out.println("Tested paths : " + compteur);
 			
 			path_flow = Integer.MAX_VALUE;
 			
 			// On détermine le flot max du chemin : path_flow
-			for (int i = 0; i < path.size()-1; i++) {
-				edge = path.get(i).getEdge(path.get(i+1));
-				path_flow = Math.min(path_flow, edge.getFlow(path.get(i)));
+			node = dst;
+			while (node.getId() != src.getId()) {
+				edge = node.getEdge(node.getPred());
+				path_flow = Math.min(path_flow, edge.getFlow(node.getPred()));
+				node = node.getPred();
 			}
-			
+
 			// On ajoute le flot du chemin au flot global
 			max_flow += path_flow;
 			
 			// Pour chaque edge, on update les capacités résiduelles
-			for (int i = 0; i < path.size()-1; i++) {
-				edge = path.get(i).getEdge(path.get(i+1));
-				edge.incFlow(path.get(i), path_flow);
-				edge.incFlow(path.get(i+1), -path_flow);
+			node = dst;
+			while (node.getId() != src.getId()) {
+				edge = node.getEdge(node.getPred());
+				edge.incFlow(node.getPred(), path_flow);
+				edge.incFlow(node, -path_flow);
+				node = node.getPred();
 			}
+			
+			compteur++;
 		}
 		
 		return max_flow;
 	}
+	
+	public static void main(String[] args) {
+		Main main = new Main();
+		main.start();
+    }
 }
