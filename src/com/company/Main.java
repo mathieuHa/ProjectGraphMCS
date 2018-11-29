@@ -37,7 +37,7 @@ public class Main {
 		graphe.getNodeSrc().setId(1);
 		graphe.getNodeDst().setId(2);
 		System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
-		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
+		//System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 
         BFS bfs = new BFS(graphe);
 
@@ -54,7 +54,7 @@ public class Main {
 		}
 	}
 	
-	private boolean BFS(Node src, Node dst) {
+	/*private boolean BFS(Node src, Node dst) {
 		resetNodesMark();
 		LinkedList<Node> queue = new LinkedList<>();
 		queue.offer(src);
@@ -75,9 +75,9 @@ public class Main {
             }
         }
 		return dst.getMark();
-	}
+	}*/
 	
-	private int fordF(Node src, Node dst) {
+	/*private int fordF(Node src, Node dst) {
 		int max_flow = 0, path_flow;
 		Edge edge;
 		Node node;
@@ -115,7 +115,7 @@ public class Main {
 		}
 		
 		return max_flow;
-	}
+	}*/
 
 	public static void main(String[] args) {
 		Main main = new Main();
