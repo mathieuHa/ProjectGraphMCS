@@ -29,12 +29,28 @@ public class Edge {
         this.border = "link";
     }
 
+    public Edge (Edge edge) {
+        this.src = edge.getSrc();
+        this.dest = edge.getDest();
+        this.pointList = edge.pointList;
+        this.capacity = edge.getCapacity();
+        this.flow = edge.getFlow();
+        this.id = edge.getId();
+        this.type = edge.type;
+    }
+
     public Edge(int id, Node src, Node dest, String type, String name) {
         this.id = id;
         this.src = src;
         this.dest = dest;
         this.type = type;
         this.name = name;
+    }
+
+    public void InvEdge(){
+        Node nodeSrc = this.getDest();
+        this.setDest(this.getSrc());
+        this.setSrc(nodeSrc);
     }
 
     public int getId() {

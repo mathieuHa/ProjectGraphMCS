@@ -12,6 +12,7 @@ public class Main {
 	}
 
 	public void start(){
+		graphe.cleanFiles();
 		System.out.println("Size before" + graphe.getListEdge().size());
 		graphe.filterRelevant();
         System.out.println("Size middle" + graphe.getListEdge().size());
@@ -22,8 +23,7 @@ public class Main {
         graphe.filterNodeEdge();
 		graphe.updateNodes();
 		
-        graphe.writeEdges("web/edges.js");
-        graphe.writeNodes("web/nodes.js");
+
 
         System.out.println("Start BFS");
         /*BFS bfs = new BFS(graphe);
@@ -33,6 +33,9 @@ public class Main {
         //Test test = new Test();
         FordF f = new FordF(graphe);
         f.execute();
+
+		graphe.writeEdgesV3("web/edges.js");
+		graphe.writeNodes("web/nodes.js");
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
