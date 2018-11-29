@@ -20,9 +20,14 @@ public class Main {
         graphe.writeEdges("web/edges.js");
         graphe.writeNodes("web/nodes.js");
 
+        System.out.println("Start BFS");
+        /*BFS bfs = new BFS(graphe);
+        System.out.println("Path trouvé : " + bfs.execute());
+        System.out.println(bfs.getPathBFS());*/
 
-        BFS bfs = new BFS(graphe);
-
+        //Test test = new Test();
+        FordF f = new FordF(graphe);
+        f.execute();
         //graphe.testDist();
 
 
@@ -34,7 +39,7 @@ public class Main {
 		return null;
 	}
 	
-	private float fordF(Node src, Node dst) {
+	/*private float fordF(Node src, Node dst) {
 		int max_flow = 0, path_flow;
 		ArrayList<Node> path = null;
 		Edge edge;
@@ -62,5 +67,5 @@ public class Main {
 		}
 		
 		return max_flow;
-	}
+	}*/
 }

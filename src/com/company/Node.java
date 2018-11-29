@@ -70,7 +70,9 @@ public class Node {
     public String toString() {
         return "Node{" +
                 "id=" + id +
-                ", pos=" + pos +
+         //       ", pos=" + pos +
+                ", marked= " + mark +
+                ", pred= " + pred +
                 "} \n";
     }
 

@@ -57,7 +57,7 @@ public class Djikstra {
     public void run () {
         init();
         while (!graphe.getListNode().isEmpty()){
-            // TODO
+            // TODO l
         }
     }
 }

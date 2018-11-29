@@ -33,8 +33,8 @@ public class Graphe {
         centerPoint = cityCenter;
         this.initGraph(jsonFileName);
         this.fillNode();
-        this.nodeDst = new Node();
-        this.nodeSrc = new Node();
+        this.nodeDst = new Node(0);
+        this.nodeSrc = new Node(10000);
 
     }
 
@@ -48,6 +48,13 @@ public class Graphe {
         this.nodeSrc = new Node(graphe.getNodeSrc());
         this.nodeDst = new Node(graphe.getNodeDst());
 
+    }
+
+    public Graphe() {
+        this.listEdge = new ArrayList<>();
+        this.listNode = new HashMap<>();
+        this.nodeDst = new Node();
+        this.nodeSrc = new Node();
     }
 
     public ArrayList<Edge> getListEdge() {
@@ -130,7 +137,7 @@ public class Graphe {
     public void filterRelevant () {
         ArrayList<Edge> listTemp = new ArrayList<>();
         for (Edge edge : listEdge){
-            if (edge.getType().equals("primary") || edge.getType().equals("tertiary") || edge.getType().equals("secondary") || edge.getType().equals("trunk") || edge.getType().equals("motorway")){
+            if (edge.getType().equals("primary") /*|| edge.getType().equals("tertiary") || edge.getType().equals("secondary") || edge.getType().equals("trunk") || edge.getType().equals("motorway")*/){
                 listTemp.add(edge);
             }
         }
@@ -180,14 +187,14 @@ public class Graphe {
                     if (distDst < distInner) {
                         listEdgeSide.add(new Edge(nodeSrc, edge.getDest()));
                     } else if (distDst > distOuter) {
-                        listEdgeSide.add(new Edge(edge.getDest(), nodeDst));
+                        listEdgeSide.add(new Edge(nodeDst, edge.getDest()));
                     }
                 } else if ((distDst > distInner && distDst < distOuter)) {
                     edge.setBorder("src");
                     if (distSrc < distInner) {
                         listEdgeSide.add(new Edge(nodeSrc, edge.getSrc()));
                     } else if (distSrc > distOuter) {
-                        listEdgeSide.add(new Edge(edge.getSrc(), nodeDst));
+                        listEdgeSide.add(new Edge(nodeDst, edge.getSrc()));
                     }
                 }
             }
@@ -235,12 +242,15 @@ public class Graphe {
                     "        \"coordinates\": [\n");
             for (Map.Entry node: listNode.entrySet()){
                 Node nodeTmp = (Node) node.getValue();
-                fileWriter.write(
-                    "\t \t ["+ nodeTmp.getPos().getLongitude()+ ", "+ nodeTmp.getPos().getLatitude() +"]");
-                i++;
-                if (i!=listNode.size()){
-                    fileWriter.write(",\n");
+                if (nodeTmp.getPos() != null) {
+                    fileWriter.write(
+                            "\t \t [" + nodeTmp.getPos().getLongitude() + ", " + nodeTmp.getPos().getLatitude() + "]");
+                    i++;
+                    if (i!=listNode.size()){
+                        fileWriter.write(",\n");
+                    }
                 }
+
 
             }
             fileWriter.write("]\n \t}\n}]; \n" +
@@ -354,5 +364,14 @@ public class Graphe {
 
     public void setNodeSrc(Node nodeSrc) {
         this.nodeSrc = nodeSrc;
+    }
+
+    @Override
+    public String toString() {
+        return "Graphe{" +
+                "listEdge=" + listEdge +
+                ", maxFlow=" + maxFlow +
+                ", listNode=" + listNode +
+                '}';
     }
 }

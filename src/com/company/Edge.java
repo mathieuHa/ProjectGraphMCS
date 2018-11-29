@@ -11,9 +11,9 @@ public class Edge {
     private String border;
     private int dist = 1;
     private ArrayList<Coord> pointList;
-	private final int capacity = 1;
-	// Flow de src vers dst
-	private int flowSrc = 0;
+	private int capacity = 1;
+	// Flow
+	private int flow = 0;
 	// Flow de dst vers src
 	private int flowDest = 0;
 
@@ -100,7 +100,7 @@ public class Edge {
         this.dist = dist;
     }
 	
-	public void incFlow(Node n, int path_flow) {
+	/*public void incFlow(Node n, int path_flow) {
 		if(n.getId() == src.getId())
 			flowSrc += path_flow;
 		else if(n.getId() == dest.getId())
@@ -108,8 +108,11 @@ public class Edge {
 		else
 			System.err.println("incFlow : Error");
 	}
-	
-	public int getFlow(Node n){
+	*/
+	public int getResidualCapacity () {
+	    return capacity - flow;
+    }
+	/*public int getFlow(Node n){
 		if(n.getId() == src.getId())
 			return flowSrc;
 		else if(n.getId() == dest.getId())
@@ -118,7 +121,7 @@ public class Edge {
 			System.err.println("getFlow : Error");
 			return Integer.MAX_VALUE;
 		}
-	}
+	}*/
 
     @Override
     public String toString() {
@@ -128,8 +131,26 @@ public class Edge {
                 ", dest=" + dest +
                 ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
+                ", capa=" + capacity + " " +
+                ", flow=" + flow + " " +
                 ", border='" + border + '\'' +
                 ", pointList=" + pointList +
                 "}\n";
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public int getFlow() {
+        return flow;
+    }
+
+    public void setFlow(int flow) {
+        this.flow = flow;
     }
 }
