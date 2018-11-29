@@ -34,12 +34,12 @@ public class Main {
         FordF f = new FordF(graphe);
         f.execute();
 
-		graphe.getNodeSrc().setId(1);
-		graphe.getNodeDst().setId(2);
-		System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
+		//graphe.getNodeSrc().setId(1);
+		//graphe.getNodeDst().setId(2);
+		//System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
 		//System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 
-        BFS bfs = new BFS(graphe);
+        //BFS bfs = new BFS(graphe);
 
         //graphe.testDist();
 

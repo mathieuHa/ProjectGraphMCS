@@ -137,7 +137,7 @@ public class Graphe {
     public void filterRelevant () {
         ArrayList<Edge> listTemp = new ArrayList<>();
         for (Edge edge : listEdge){
-            if (edge.getType().equals("primary") /*|| edge.getType().equals("tertiary") || edge.getType().equals("secondary") || edge.getType().equals("trunk") || edge.getType().equals("motorway")*/){
+            if (edge.getType().equals("primary") || edge.getType().equals("tertiary") || edge.getType().equals("secondary")/* || edge.getType().equals("trunk") || edge.getType().equals("motorway")*/){
                 listTemp.add(edge);
             }
         }
@@ -185,22 +185,33 @@ public class Graphe {
                 } else if ((distSrc > distInner && distSrc < distOuter)) {
                     edge.setBorder("dst");
                     if (distDst < distInner) {
-                        listEdgeSide.add(new Edge(nodeSrc, edge.getDest()));
+                        addBorderEdge(listEdgeSide, edge.getDest(), nodeSrc);
                     } else if (distDst > distOuter) {
-                        listEdgeSide.add(new Edge(nodeDst, edge.getDest()));
+                        addBorderEdge(listEdgeSide, edge.getDest(), nodeDst);
                     }
-                } else if ((distDst > distInner && distDst < distOuter)) {
+                }
+
+                 else if ((distDst > distInner && distDst < distOuter)) {
                     edge.setBorder("src");
                     if (distSrc < distInner) {
-                        listEdgeSide.add(new Edge(nodeSrc, edge.getSrc()));
+                        addBorderEdge(listEdgeSide, edge.getSrc(), nodeSrc);
                     } else if (distSrc > distOuter) {
-                        listEdgeSide.add(new Edge(nodeDst, edge.getSrc()));
+                        addBorderEdge(listEdgeSide, edge.getSrc(), nodeDst);
                     }
                 }
             }
         }
         listTemp.addAll(listEdgeSide);
         listEdge = listTemp;
+    }
+
+    private void addBorderEdge(ArrayList<Edge> listEdgeSide, Node src, Node dst){
+        Edge sens1 = new Edge(src, dst);
+        Edge sens2 = new Edge(dst, src);
+        sens1.setCapacity(Integer.MAX_VALUE);
+        sens2.setCapacity(Integer.MAX_VALUE);
+        listEdgeSide.add(sens1);
+        listEdgeSide.add(sens2);
     }
 
 	public void updateNodes() {
@@ -337,7 +348,7 @@ public class Graphe {
     }*/
 
     // Calcul la distance entre deux coordonnées
-    private double distanceCoord (Coord A, Coord B) {
+    public double distanceCoord (Coord A, Coord B) {
         return Math.acos( (Math.sin(Math.toRadians(A.getLatitude())) * Math.sin(Math.toRadians(B.getLatitude())))
                 + (Math.cos(Math.toRadians(A.getLatitude())) * Math.cos(Math.toRadians(B.getLatitude()))
                 * Math.cos(Math.toRadians(B.getLongitude() - A.getLongitude()) ) ) ) * 6371.0;

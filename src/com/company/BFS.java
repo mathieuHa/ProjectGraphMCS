@@ -17,19 +17,22 @@ public class BFS {
         LinkedList<Node> temp;
         file.addLast(gr.getNodeSrc());
         gr.getNodeSrc().setMark(true);
-        System.out.println("SOURCE" + gr.getNodeSrc());
-        System.out.println("SINK" + gr.getNodeDst());
+        System.out.println("SOURCE " + gr.getNodeSrc());
+        System.out.println("SINK   " + gr.getNodeDst());
 
         boolean found = false;
         while (!file.isEmpty() && !found){
             Node s = file.removeLast();
+            if (s.getId()!=0 && s.getId()!=10000 && (gr.distanceCoord(gr.LAVAL_CENTER, s.getPos()) < 1.2) ){
+                System.err.println("Node Close " + s);
+            }
             if (s.getId() == gr.getNodeDst().getId()){
                 System.out.println("FOUND "+s);
                 found = true;
             } else {
-                System.out.println(s);
+                //System.out.println("Selected " + s);
                 temp = getNeigbourg(gr.getListEdge(), s);
-                System.out.println("getNeigbourg\n" + temp);
+                //System.out.println("Found " + temp.size() + " Neigbourg\n" + temp);
                 for (Node node : temp) {
                     file.addLast(node);
                 }
@@ -65,14 +68,14 @@ public class BFS {
             System.out.println("Node " + node);
             System.out.println("------------------------------------------");*/
             if (nodeDst.getId() == node.getId() && !nodeSrc.getMark()) {
-                System.out.println("src && !marked Flow " + edge.getFlow());
+                //System.out.println("src && !marked Flow " + edge.getFlow());
                 if (edge.getFlow() > 0) {
                     nodeSrc.setPred(node);
                     nodeSrc.setMark(true);
                     listNode.addLast(nodeSrc);
                 }
             } else if (nodeSrc.getId() == node.getId() && !nodeDst.getMark()){
-                System.out.println("dst && !marked Res " + edge.getResidualCapacity());
+                //System.out.println("dst && !marked Res " + edge.getResidualCapacity());
                 if (edge.getResidualCapacity() > 0) {
                     nodeDst.setPred(node);
                     nodeDst.setMark(true);

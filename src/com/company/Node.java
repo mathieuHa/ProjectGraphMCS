@@ -73,7 +73,7 @@ public class Node {
          //       ", pos=" + pos +
                 ", marked= " + mark +
                 ", pred= " + pred +
-                "} \n";
+                "} ";
     }
 
     public Node getPred() {

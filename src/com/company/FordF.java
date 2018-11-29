@@ -16,13 +16,14 @@ public class FordF {
         int minFlow;
         bfs = new BFS(gr);
         while (bfs.execute()){
+            System.out.println("PATH FOUND WITH BFS");
             path = bfs.getPathBFS();
             System.out.println("PATH SIZE = " + path.size());
             minFlow = getMinFlow();
             System.out.println("MINFLOW " + minFlow);
             maxFlow+=minFlow;
             updateFlow(minFlow);
-            System.out.println(gr);
+            //System.out.println(gr);
             System.out.println("MAXFLOW " + maxFlow);
             try {
                 Thread.sleep(10000);
@@ -38,7 +39,6 @@ public class FordF {
             Integer tempFlow = getValueFlowEdgeFromNode(path.get(i), path.get(i+1));
             if (tempFlow!=null)
                 maxFlow = Math.min(maxFlow, tempFlow);
-            //else System.err.println("UN FLOWWWWWWWWWWWWWWWWWWW");
         }
         return maxFlow;
     }
