@@ -95,4 +95,8 @@ public class Node {
 	public void addEdge(Edge edge) {
 		edges.addLast(edge);
 	}
+
+	public LinkedList<Edge> getEdges() {
+		return edges;
+	}
 }

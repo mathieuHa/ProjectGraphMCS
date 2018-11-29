@@ -203,7 +203,7 @@ public class Graphe {
         listEdge = listTemp;
     }
 
-	public void updateNode() {
+	public void updateNodes() {
 	
 		for (Map.Entry node: listNode.entrySet()){
 			Node nodeTmp = (Node) node.getValue();

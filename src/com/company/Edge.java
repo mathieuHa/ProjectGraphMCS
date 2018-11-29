@@ -100,6 +100,10 @@ public class Edge {
         this.dist = dist;
     }
 	
+	public int getCapacity() {
+		return capacity;
+	}
+
 	/*public void incFlow(Node n, int path_flow) {
 		if(n.getId() == src.getId())
 			flowSrc += path_flow;
@@ -107,8 +111,8 @@ public class Edge {
 			flowDest += path_flow;
 		else
 			System.err.println("incFlow : Error");
-	}
-	*/
+	}*/
+
 	public int getResidualCapacity () {
 	    return capacity - flow;
     }
@@ -121,6 +125,19 @@ public class Edge {
 			System.err.println("getFlow : Error");
 			return Integer.MAX_VALUE;
 		}
+	}
+
+	// Renvoie le 2nd noeud (celui qui n'est pas passé en param)
+	public Node getNode(Node n) {
+		if (n.getId() == src.getId())
+			return dest;
+		else if (n.getId() == dest.getId())
+			return src;
+		else {
+			System.err.println("getNode : Impossible de récupérer le noeud.\n" + this);
+			return null;
+		}
+	}
 	}*/
 
     @Override
@@ -136,10 +153,6 @@ public class Edge {
                 ", border='" + border + '\'' +
                 ", pointList=" + pointList +
                 "}\n";
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public void setCapacity(int capacity) {
