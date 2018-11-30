@@ -23,9 +23,9 @@ public class BFS {
         boolean found = false;
         while (!file.isEmpty() && !found){
             Node s = file.removeLast();
-            if (s.getId()!=0 && s.getId()!=10000 && (gr.distanceCoord(gr.LAVAL_CENTER, s.getPos()) < 1.2) ){
+            /*if (s.getId()!=0 && s.getId()!=10000 && (gr.distanceCoord(gr.LAVAL_CENTER, s.getPos()) < 1.2) ){
                 System.err.println("Node Close " + s);
-            }
+            }*/
             if (s.getId() == gr.getNodeDst().getId()){
                 System.out.println("FOUND "+s);
                 found = true;

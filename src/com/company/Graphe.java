@@ -124,6 +124,7 @@ public class Graphe {
                         edgeTemp.setSrc(listNode.get(jTemp.getInt("from")));
                         edgeTemp.setDest(listNode.get(jTemp.getInt("to")));
                         edgeTemp.setType(jTempProp.getString("highway"));
+                        edgeTemp.setCapacity(jTempProp.optInt("maxspeed", 50));
                         edgeTemp.setId(jTempProp.getInt("id"));
                         edgeTemp.setName(jTempProp.optString("name"));
                         for (int a=0; a<arrayCoord.length(); a++) {
@@ -340,10 +341,12 @@ public class Graphe {
                         }
                     }
                     fileWriter.write("],");
-                    if (edge.getFlow()!=1)
+                    if (edge.getResidualCapacity()==edge.getCapacity())
                         fileWriter.write("{color:'green'}");
-                    else
+                    else if (edge.getResidualCapacity() == 0)
                         fileWriter.write("{color:'red'}");
+                    else
+                        fileWriter.write("{color:'gold'}");
                     fileWriter.write(").addTo(mymap).bindPopup('"+"Src : "+edge.getSrc().getId()+" Dst : "+ edge.getDest().getId()+"');\n");
                     i++;
                     /*if (i!=listEdge.size()){

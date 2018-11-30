@@ -45,7 +45,7 @@ public class Main {
         //f.execute();
 
 		graphe.writeEdgesV3("web/edges.js");
-		graphe.writeNodes("web/nodes.js");
+		//graphe.writeNodes("web/nodes.js");
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
@@ -67,6 +67,29 @@ public class Main {
 		}
 	}
 	
+	private boolean extractCut(Node src, Node dst) {
+		resetNodesMark();
+		LinkedList<Node> queue = new LinkedList<>();
+		queue.offer(src);
+		src.setMark(true);
+
+		Node node, nghbg = null;
+		while (!queue.isEmpty()) {
+            node = queue.poll();
+			
+			// On regarde les voisins
+			for (Edge edge : node.getEdges()) {
+				nghbg = edge.getNode(node);
+				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
+					queue.offer(nghbg);
+					nghbg.setMark(true);
+					nghbg.setPred(node);
+				}
+            }
+        }
+		return dst.getMark();
+	}
+	
 	private boolean BFS(Node src, Node dst) {
 		resetNodesMark();
 		LinkedList<Node> queue = new LinkedList<>();
@@ -76,20 +99,17 @@ public class Main {
 		Node node, nghbg = null;
 		while (!queue.isEmpty()) {
             node = queue.poll();
+			
 			// On regarde les voisins
 			for (Edge edge : node.getEdges()) {
 				nghbg = edge.getNode(node);
-				//System.out.println("Node : " + nghbg);
-				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
+				if (!nghbg.getMark()) {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
-					//System.out.println("Node : " + nghbg);
-					//System.out.println(edge.getResCap(node));
 				}
             }
         }
-		//System.out.println("Path : " + nghbg);
 		return dst.getMark();
 	}
 	
@@ -112,7 +132,7 @@ public class Main {
 				//path_flow = Math.min(path_flow, edge.getResCap(node));
 				node = node.getPred();
 			}
-			System.out.println("end path. Flow : " +path_flow);
+			System.out.println("PathFlow : " +path_flow);
 
 			// On ajoute le flot du chemin au flot global
 			max_flow += path_flow;
@@ -126,7 +146,7 @@ public class Main {
 				//System.out.println(edge);
 			}
 		}
-		
+		//extractCut(src, dst);
 		return max_flow;
 	}
 

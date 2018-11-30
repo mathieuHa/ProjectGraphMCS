@@ -14,23 +14,24 @@ public class Test {
 
     private void init() {
 
-        addEdge(1, 2);
-        addEdge(2, 3);
-        addEdge(1, 3);
-        addEdge(3, 5);
-        addEdge(2, 5);
-        addEdge(5, 4);
-        addEdge(4, 6);
-        addEdge(5, 6);
-        addEdge(2, 4);
+        addEdge(1, 2, 10);
+        addEdge(2, 3, 2);
+        addEdge(1, 3, 10);
+        addEdge(3, 5, 9);
+        addEdge(2, 5, 8);
+        addEdge(5, 4, 6);
+        addEdge(4, 6, 10);
+        addEdge(5, 6 ,10);
+        addEdge(2, 4, 4);
         setSourceAndDest(1,6);
 
     }
 
-    private void addEdge(int src, int dst) {
+    private void addEdge(int src, int dst, int cap) {
         Node nodeSrc = new Node(src);
         Node nodeDst = new Node(dst);
         Edge edge = new Edge(nodeSrc, nodeDst);
+        edge.setCapacity(cap);
         this.graphe.getListEdge().add(edge);
         addNode(nodeSrc);
         addNode(nodeDst);
