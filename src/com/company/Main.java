@@ -35,7 +35,7 @@ public class Main {
         f.execute();
 
 		graphe.writeEdgesV3("web/edges.js");
-		graphe.writeNodes("web/nodes.js");
+		//graphe.writeNodes("web/nodes.js");
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
