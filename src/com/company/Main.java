@@ -20,8 +20,15 @@ public class Main {
         //graphe.printNodeList();
         graphe.filterZone();
         System.out.println("Size after" + graphe.getListEdge().size());
-        graphe.filterNodeEdge();
+		graphe.filterNodeEdge();
 		graphe.updateNodes();
+		
+		//Check la connexité du graphe
+		/*for (Map.Entry node: graphe.getListNode().entrySet()){
+			Node nodeTmp = (Node) node.getValue();
+			if(nodeTmp.getEdges().isEmpty())
+				System.err.println("Le graphe n'est pas connexe !");
+		}*/
 
         /*System.out.println("Start BFS");
         BFS bfs = new BFS(graphe);
@@ -72,12 +79,12 @@ public class Main {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
-					System.out.println("Node : " + nghbg);
+					//System.out.println("Node : " + nghbg);
 				}
             }
         }
 		//System.out.println("Node : " + nghbg);
-		System.out.println("Path : " + dst.getMark());
+		System.out.println("Path : " + nghbg);
 		return dst.getMark();
 	}
 	

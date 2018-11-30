@@ -32,7 +32,7 @@ public class Graphe {
         this.distOuter = distOuter;
         centerPoint = cityCenter;
         this.initGraph(jsonFileName);
-        this.fillNode();
+        //this.fillNode();
         this.nodeDst = new Node(0);
         this.nodeSrc = new Node(10000);
 
@@ -89,11 +89,31 @@ public class Graphe {
             features = base.getJSONArray("features");
 			JSONObject jTemp, jTempProp, jTempGeo;
 			JSONArray arrayCoord, coArray;
-			Node nodeSrc, nodeDst, nodeTemp;
+			Node nodeTemp;
 			Edge edgeTemp;
 			Coord coord;
 			
+			// Initialisation des nodes
             for (int i=0; i< features.length(); i++){
+                jTemp = features.getJSONObject(i);
+                if (jTemp != null) {
+                    jTempProp = jTemp.getJSONObject("properties");
+                    jTempGeo  = jTemp.getJSONObject("geometry");
+                    arrayCoord = jTempGeo.getJSONArray("coordinates");
+                    if (jTempGeo.getString("type").equals("Point")){
+                        nodeTemp = new Node();
+						nodeTemp.setId(jTempProp.getInt("id"));
+                        coord = new Coord();
+                        coord.setLatitude(arrayCoord.getDouble(1));
+                        coord.setLongitude(arrayCoord.getDouble(0));
+						nodeTemp.setPos(coord);
+                        listNode.put(nodeTemp.getId(), nodeTemp);
+                    }
+                }
+            }
+			
+			// Initialisation des edges
+			for (int i=0; i< features.length(); i++){
                 jTemp = features.getJSONObject(i);
                 if (jTemp != null) {
                     jTempProp = jTemp.getJSONObject("properties");
@@ -101,10 +121,8 @@ public class Graphe {
                     arrayCoord = jTempGeo.getJSONArray("coordinates");
                     if (jTempGeo.getString("type").equals("LineString")){
                         edgeTemp = new Edge();
-                        nodeSrc = new Node(jTemp.getInt("from"));
-                        edgeTemp.setSrc(nodeSrc);
-                        nodeDst = new Node(jTemp.getInt("to"));
-                        edgeTemp.setDest(nodeDst);
+                        edgeTemp.setSrc(listNode.get(jTemp.getInt("from")));
+                        edgeTemp.setDest(listNode.get(jTemp.getInt("to")));
                         edgeTemp.setType(jTempProp.getString("highway"));
                         edgeTemp.setId(jTempProp.getInt("id"));
                         edgeTemp.setName(jTempProp.optString("name"));
@@ -118,15 +136,7 @@ public class Graphe {
                         Edge inv = new Edge(edgeTemp);
                         inv.InvEdge();
                         listEdge.add(edgeTemp);
-                        //listEdge.add(inv);
-                    } else if (jTempGeo.getString("type").equals("Point")){
-                        nodeTemp = new Node();
-                        coord = new Coord();
-                        nodeTemp.setId(jTempProp.getInt("id"));
-                        coord.setLatitude(arrayCoord.getDouble(1));
-                        coord.setLongitude(arrayCoord.getDouble(0));
-                        nodeTemp.setPos(coord);
-                        listNode.put(nodeTemp.getId(), nodeTemp);
+                        listEdge.add(inv);
                     }
                 }
             }
@@ -182,7 +192,7 @@ public class Graphe {
 
     // Filtre sur les nodes qui sont entre les deux cercles
     public void filterZone() {
-        ArrayList<Edge> listTemp = new ArrayList<Edge>();
+        ArrayList<Edge> listTemp = new ArrayList<>();
         ArrayList<Edge> listEdgeSide = new ArrayList<>();
         for (Edge edge: listEdge){
             double distSrc = distanceCoord(new Coord(edge.getSrc().getPos().getLatitude(), edge.getSrc().getPos().getLongitude()),  centerPoint);

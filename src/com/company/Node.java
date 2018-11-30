@@ -12,7 +12,7 @@ public class Node {
 
 
     public Node(){
-        this.pos = new Coord();
+        //this.pos = new Coord();
     }
     public Node(int id) {
         this.id = id;
@@ -72,7 +72,6 @@ public class Node {
                 "id=" + id +
          //       ", pos=" + pos +
 				", num edges= " + edges.size() +
-				", hash= " + System.identityHashCode(this) +
                 ", marked= " + mark +
                 ", \n	pred= " + pred +
                 "} ";
