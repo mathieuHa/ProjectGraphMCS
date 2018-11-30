@@ -365,9 +365,8 @@ public class Graphe {
         try (FileWriter fileWriter = new FileWriter(fileName, false)) {
             fileWriter.write("var iconL = L.icon({\n" +
                     "    iconUrl: 'icon.png',\n" +
-                    "\n" +
-                    "    iconSize:     [38, 95], // size of the icon\n" +
-                    "    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location\n" +
+                    "    iconSize:     [45, 70], // size of the icon\n" +
+                    "    iconAnchor:   [22, 70], // point of the icon which will correspond to marker's location\n" +
                     "    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor\n" +
                     "});");
             for (Coord coord: listCoord){

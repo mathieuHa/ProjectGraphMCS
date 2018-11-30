@@ -9,7 +9,7 @@ public class Main {
 	private Graphe graphe;
 
 	public Main(){
-		graphe = new Graphe(2, 0.5, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
+		graphe = new Graphe(2.5, 1, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
 	}
 
 	public void start(){
@@ -47,7 +47,8 @@ public class Main {
 		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 		graphe.writeEdgesV3("web/edges.js");
 		graphe.writeNodes("web/nodes.js");
-		graphe.writeBlock("web/block.js", extractCut(graphe.getNodeSrc())); // to fill HERE
+		graphe.writeBlock("web/block.js", extractCut(graphe.getNodeSrc()));
+
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
