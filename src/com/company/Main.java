@@ -12,6 +12,7 @@ public class Main {
 	}
 
 	public void start(){
+		graphe.cleanFiles();
 		System.out.println("Size before" + graphe.getListEdge().size());
 		//graphe.filterRelevant();
         System.out.println("Size middle" + graphe.getListEdge().size());
@@ -21,9 +22,6 @@ public class Main {
         System.out.println("Size after" + graphe.getListEdge().size());
         graphe.filterNodeEdge();
 		graphe.updateNodes();
-		
-        //graphe.writeEdges("web/edges.js");
-        //graphe.writeNodes("web/nodes.js");
 
         /*System.out.println("Start BFS");
         BFS bfs = new BFS(graphe);
@@ -34,8 +32,11 @@ public class Main {
         //FordF f = new FordF(graphe);
         //f.execute();
 
-		//graphe.getNodeSrc().setId(-1);
-		//graphe.getNodeDst().setId(-2);
+		graphe.writeEdgesV3("web/edges.js");
+		graphe.writeNodes("web/nodes.js");
+
+		//graphe.getNodeSrc().setId(1);
+		//graphe.getNodeDst().setId(2);
 		//System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
 		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 

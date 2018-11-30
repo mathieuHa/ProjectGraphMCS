@@ -115,7 +115,10 @@ public class Graphe {
                             coord.setLongitude(coArray.getDouble(0));
                             edgeTemp.getPointList().add(coord);
                         }
+                        Edge inv = new Edge(edgeTemp);
+                        inv.InvEdge();
                         listEdge.add(edgeTemp);
+                        //listEdge.add(inv);
                     } else if (jTempGeo.getString("type").equals("Point")){
                         nodeTemp = new Node();
                         coord = new Coord();
@@ -137,7 +140,13 @@ public class Graphe {
     public void filterRelevant () {
         ArrayList<Edge> listTemp = new ArrayList<>();
         for (Edge edge : listEdge){
-            if (edge.getType().equals("primary") || edge.getType().equals("tertiary") || edge.getType().equals("secondary")/* || edge.getType().equals("trunk") || edge.getType().equals("motorway")*/){
+            if (edge.getType().equals("primary") || edge.getType().equals("primary_link") ||
+                    edge.getType().equals("secondary") || edge.getType().equals("secondary_link") ||
+                    edge.getType().equals("tertiary") || edge.getType().equals("tertiary_link") ||
+                    edge.getType().equals("trunk") ||  edge.getType().equals("trunk_link") ||
+                    edge.getType().equals("motorway") || edge.getType().equals("motorway_link")
+            )
+                    {
                 listTemp.add(edge);
             }
         }
@@ -242,30 +251,22 @@ public class Graphe {
         int i = 0;
         try (FileWriter fileWriter = new FileWriter(fileName, false)) {
 			
-            fileWriter.write("var points = [");
             Iterator it = listNode.keySet().iterator();
 
-            fileWriter.write("" +
-                    "{\n" +
-                    "    \"type\": \"Feature\",\n" +
-                    "    \"geometry\": {\n" +
-                    "        \"type\": \"MultiPoint\",\n" +
-                    "        \"coordinates\": [\n");
             for (Map.Entry node: listNode.entrySet()){
                 Node nodeTmp = (Node) node.getValue();
                 if (nodeTmp.getPos() != null) {
-                    fileWriter.write(
-                            "\t \t [" + nodeTmp.getPos().getLongitude() + ", " + nodeTmp.getPos().getLatitude() + "]");
+                    fileWriter.write("L.marker([" + nodeTmp.getPos().getLatitude() + ", " + nodeTmp.getPos().getLongitude() + "]).addTo(mymap).bindPopup('"+nodeTmp.getId()+"').openPopup();\n");
                     i++;
                     if (i!=listNode.size()){
-                        fileWriter.write(",\n");
+                        //fileWriter.write(",\n");
                     }
                 }
 
 
             }
-            fileWriter.write("]\n \t}\n}]; \n" +
-                    "L.geoJSON(points).addTo(mymap);");
+            //fileWriter.write("]\n \t}\n}]; \n" +
+              //      "L.geoJSON(points).addTo(mymap);");
 
         } catch (IOException e) {
             System.err.println("Cannot write file " + fileName + " : " + e);
@@ -307,6 +308,41 @@ public class Graphe {
         }
     }
 
+    // écrit dans le fichier edges la liste des arrêtes à afficher en utilisant toutes les coordonnées entres les src et dst pour plus de précision
+    public void writeEdgesV3(String fileName) {
+        int i = 0;
+        try (FileWriter fileWriter = new FileWriter(fileName, false)) {
+
+            for (Edge edge: listEdge){
+                if (!edge.getBorder().equals("link")){ // on écrit pas les arrêtes vers la source et le puit
+                    fileWriter.write("var linees = L.polyline(" +
+                            "[");
+                    int e = 0;
+                    for (Coord coord: edge.getPointList()){
+                        fileWriter.write("["+coord.getLatitude()+","+coord.getLongitude()+"]");
+                        e++;
+                        if (e!=edge.getPointList().size()){
+                            fileWriter.write(",");
+                        }
+                    }
+                    fileWriter.write("],");
+                    if (edge.getFlow()!=1)
+                        fileWriter.write("{color:'green'}");
+                    else
+                        fileWriter.write("{color:'red'}");
+                    fileWriter.write(").addTo(mymap).bindPopup('"+"Src : "+edge.getSrc().getId()+" Dst : "+ edge.getDest().getId()+"');\n");
+                    i++;
+                    /*if (i!=listEdge.size()){
+                        fileWriter.write(",");
+                    }*/
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println("Cannot write file " + fileName + " : " + e);
+        }
+    }
+
     // Ecris dans le fichier edges la liste des arrêtes à afficher en utilisant seulement les arrêtes src et dst
     public void writeEdgeEndToEnd(String fileName) { //fileName : "web/edges.js"
         System.out.println("V2");
@@ -337,7 +373,7 @@ public class Graphe {
     }
 
     // Supprimes le contenu des fichiers edges et nodes
-    /*public void cleanFiles (){
+    public void cleanFiles (){
         try (FileWriter fileWriter  = new FileWriter("web/edges.js"); 
 			 FileWriter fileWriter2 = new FileWriter("web/nodes.js")) {
 			
@@ -345,7 +381,7 @@ public class Graphe {
 			System.err.println("Cannot clean file(s) : " + e);
         }
 
-    }*/
+    }
 
     // Calcul la distance entre deux coordonnées
     public double distanceCoord (Coord A, Coord B) {
