@@ -15,10 +15,10 @@ public class Edge {
 	// Flow
 	private int flow = 0;
 	
-	// Flow de src vers dst
+	/*// Flow de src vers dst
 	private int flowSrc = 0;
 	// Flow de dst vers src
-	private int flowDest = 0;
+	private int flowDest = 0;*/
 
     public Edge(){
         this.src = new Node();
@@ -122,30 +122,44 @@ public class Edge {
 	public int getCapacity() {
 		return capacity;
 	}
+	
+	public int getFlow() {
+        return flow;
+    }
 
-	public void incFlow(Node n, int path_flow) {
-		if(n.getId() == src.getId())
-			flowSrc += path_flow;
-		else if(n.getId() == dest.getId())
-			flowDest += path_flow;
-		else
-			System.err.println("incFlow : Error");
+    public void setFlow(int flow) {
+        this.flow = flow;
+    }
+
+	public void incFlow(int path_flow) {
+		flow += path_flow;
 	}
+	
+	/*public int getFlow(Node n){
+		if(n.getId() == src.getId())
+			return flow;
+		else if(n.getId() == dest.getId())
+			return capacity - flow;
+		else {
+			System.err.println("getFlow : Error");
+			return Integer.MAX_VALUE;
+		}
+	}*/
 
 	public int getResidualCapacity () {
 	    return capacity - flow;
     }
 	
-	public int getFlow(Node n){
-		if(n.getId() == src.getId())
-			return flowSrc;
+	public int getResCap (Node n) {
+	    if(n.getId() == src.getId())
+			return capacity - flow;
 		else if(n.getId() == dest.getId())
-			return flowDest;
+			return flow;
 		else {
-			System.err.println("getFlow : Error");
+			System.err.println("getResCap : Error");
 			return Integer.MAX_VALUE;
 		}
-	}
+    }
 
 	// Renvoie le 2nd noeud (celui qui n'est pas passé en param)
 	public Node getNode(Node n) {
@@ -176,13 +190,5 @@ public class Edge {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public int getFlow() {
-        return flow;
-    }
-
-    public void setFlow(int flow) {
-        this.flow = flow;
     }
 }

@@ -87,8 +87,9 @@ public class Node {
 	
 	public Edge getEdge(Node node) {
 		for (Edge edge : edges)
-			if (edge.getDest().getId() == node.getId())
-				return edge;
+			if (edge.getDest().getId() == node.getId() || edge.getSrc().getId() == node.getId())
+				if (edge.getResCap(node) > 0)
+					return edge;
 		System.err.println("getEdge : Node not found !");
 		return null;
 	}

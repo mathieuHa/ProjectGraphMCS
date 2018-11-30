@@ -168,11 +168,15 @@ public class Graphe {
 
         HashMap<Integer, Node> listNodeHM = new HashMap<>();
 
-        for (Edge edge : listEdge) {
+        for (Iterator<Edge> it = listEdge.iterator(); it.hasNext(); ) {
+			Edge edge = it.next();
             if (!edge.getBorder().equals("link")){
                 listNodeHM.put(edge.getSrc().getId(), edge.getSrc());
                 listNodeHM.put(edge.getDest().getId(), edge.getDest());
             }
+			else if(edge.getSrc().getId() == 0 || edge.getDest().getId() == 10000) {
+				it.remove();
+			}
         }
         listNodeHM.put(0, nodeSrc);
         listNodeHM.put(10000, nodeDst);

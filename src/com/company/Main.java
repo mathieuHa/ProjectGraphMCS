@@ -24,11 +24,16 @@ public class Main {
 		graphe.updateNodes();
 		
 		//Check la connexité du graphe
-		/*for (Map.Entry node: graphe.getListNode().entrySet()){
+		for (Map.Entry node: graphe.getListNode().entrySet()){
 			Node nodeTmp = (Node) node.getValue();
 			if(nodeTmp.getEdges().isEmpty())
 				System.err.println("Le graphe n'est pas connexe !");
-		}*/
+		}
+		
+		//Check la source et le puits
+		for (Edge edge : graphe.getListEdge())
+			if(edge.getSrc().getId() == 0 || edge.getDest().getId() == 10000)
+				System.err.println("Source ou puits mal initialisé");
 
         /*System.out.println("Start BFS");
         BFS bfs = new BFS(graphe);
@@ -71,20 +76,20 @@ public class Main {
 		Node node, nghbg = null;
 		while (!queue.isEmpty()) {
             node = queue.poll();
-
 			// On regarde les voisins
 			for (Edge edge : node.getEdges()) {
 				nghbg = edge.getNode(node);
-				if (!nghbg.getMark() && (edge.getCapacity() - edge.getFlow(node) > 0)) {
+				//System.out.println("Node : " + nghbg);
+				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
 					//System.out.println("Node : " + nghbg);
+					//System.out.println(edge.getResCap(node));
 				}
             }
         }
-		//System.out.println("Node : " + nghbg);
-		System.out.println("Path : " + nghbg);
+		//System.out.println("Path : " + nghbg);
 		return dst.getMark();
 	}
 	
@@ -102,9 +107,12 @@ public class Main {
 			node = dst;
 			while (node.getId() != src.getId()) {
 				edge = node.getEdge(node.getPred());
-				path_flow = Math.min(path_flow, edge.getFlow(node.getPred()));
+				//System.out.println(edge.getResCap(node.getPred()));
+				path_flow = Math.min(path_flow, edge.getResCap(node.getPred()));
+				//path_flow = Math.min(path_flow, edge.getResCap(node));
 				node = node.getPred();
 			}
+			System.out.println("end path. Flow : " +path_flow);
 
 			// On ajoute le flot du chemin au flot global
 			max_flow += path_flow;
@@ -113,9 +121,9 @@ public class Main {
 			node = dst;
 			while (node.getId() != src.getId()) {
 				edge = node.getEdge(node.getPred());
-				edge.incFlow(node.getPred(), path_flow);
-				edge.incFlow(node, -path_flow);
+				edge.incFlow(path_flow);
 				node = node.getPred();
+				//System.out.println(edge);
 			}
 		}
 		
