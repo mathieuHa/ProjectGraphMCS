@@ -71,8 +71,10 @@ public class Node {
         return "Node{" +
                 "id=" + id +
          //       ", pos=" + pos +
+				", num edges= " + edges.size() +
+				", hash= " + System.identityHashCode(this) +
                 ", marked= " + mark +
-                ", pred= " + pred +
+                ", \n	pred= " + pred +
                 "} ";
     }
 

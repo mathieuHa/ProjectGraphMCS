@@ -8,7 +8,7 @@ public class Test {
     public Test() {
         graphe = new Graphe();
         init();
-        FordF f = new FordF(graphe);
+		FordF f = new FordF(graphe);
         f.execute();
     }
 

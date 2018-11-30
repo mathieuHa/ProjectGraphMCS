@@ -13,7 +13,7 @@ public class Main {
 
 	public void start(){
 		System.out.println("Size before" + graphe.getListEdge().size());
-		graphe.filterRelevant();
+		//graphe.filterRelevant();
         System.out.println("Size middle" + graphe.getListEdge().size());
         //graphe.printEdgeList();
         //graphe.printNodeList();
@@ -22,22 +22,22 @@ public class Main {
         graphe.filterNodeEdge();
 		graphe.updateNodes();
 		
-        graphe.writeEdges("web/edges.js");
-        graphe.writeNodes("web/nodes.js");
+        //graphe.writeEdges("web/edges.js");
+        //graphe.writeNodes("web/nodes.js");
 
-        System.out.println("Start BFS");
-        /*BFS bfs = new BFS(graphe);
+        /*System.out.println("Start BFS");
+        BFS bfs = new BFS(graphe);
         System.out.println("Path trouvé : " + bfs.execute());
         System.out.println(bfs.getPathBFS());*/
 
         //Test test = new Test();
-        FordF f = new FordF(graphe);
-        f.execute();
+        //FordF f = new FordF(graphe);
+        //f.execute();
 
-		//graphe.getNodeSrc().setId(1);
-		//graphe.getNodeDst().setId(2);
+		//graphe.getNodeSrc().setId(-1);
+		//graphe.getNodeDst().setId(-2);
 		//System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
-		//System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
+		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 
         //BFS bfs = new BFS(graphe);
 
@@ -54,13 +54,13 @@ public class Main {
 		}
 	}
 	
-	/*private boolean BFS(Node src, Node dst) {
+	private boolean BFS(Node src, Node dst) {
 		resetNodesMark();
 		LinkedList<Node> queue = new LinkedList<>();
 		queue.offer(src);
 		src.setMark(true);
 
-		Node node, nghbg;
+		Node node, nghbg = null;
 		while (!queue.isEmpty()) {
             node = queue.poll();
 
@@ -71,23 +71,22 @@ public class Main {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
+					System.out.println("Node : " + nghbg);
 				}
             }
         }
+		//System.out.println("Node : " + nghbg);
+		System.out.println("Path : " + dst.getMark());
 		return dst.getMark();
-	}*/
+	}
 	
-	/*private int fordF(Node src, Node dst) {
+	private int fordF(Node src, Node dst) {
 		int max_flow = 0, path_flow;
 		Edge edge;
 		Node node;
 
-		int compteur = 0;
 		// Tant qu'un chemin existe, on augmente le flot
 		while (BFS(src, dst)) {
-
-			if (compteur%1000000 == 0)
-				System.out.println("Tested paths : " + compteur);
 			
 			path_flow = Integer.MAX_VALUE;
 			
@@ -110,12 +109,10 @@ public class Main {
 				edge.incFlow(node, -path_flow);
 				node = node.getPred();
 			}
-
-			compteur++;
 		}
 		
 		return max_flow;
-	}*/
+	}
 
 	public static void main(String[] args) {
 		Main main = new Main();

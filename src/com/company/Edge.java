@@ -14,6 +14,9 @@ public class Edge {
 	private int capacity = 1;
 	// Flow
 	private int flow = 0;
+	
+	// Flow de src vers dst
+	private int flowSrc = 0;
 	// Flow de dst vers src
 	private int flowDest = 0;
 
@@ -104,19 +107,20 @@ public class Edge {
 		return capacity;
 	}
 
-	/*public void incFlow(Node n, int path_flow) {
+	public void incFlow(Node n, int path_flow) {
 		if(n.getId() == src.getId())
 			flowSrc += path_flow;
 		else if(n.getId() == dest.getId())
 			flowDest += path_flow;
 		else
 			System.err.println("incFlow : Error");
-	}*/
+	}
 
 	public int getResidualCapacity () {
 	    return capacity - flow;
     }
-	/*public int getFlow(Node n){
+	
+	public int getFlow(Node n){
 		if(n.getId() == src.getId())
 			return flowSrc;
 		else if(n.getId() == dest.getId())
@@ -138,7 +142,6 @@ public class Edge {
 			return null;
 		}
 	}
-	}*/
 
     @Override
     public String toString() {
