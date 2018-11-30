@@ -67,29 +67,6 @@ public class Main {
 		}
 	}
 	
-	private boolean extractCut(Node src, Node dst) {
-		resetNodesMark();
-		LinkedList<Node> queue = new LinkedList<>();
-		queue.offer(src);
-		src.setMark(true);
-
-		Node node, nghbg = null;
-		while (!queue.isEmpty()) {
-            node = queue.poll();
-			
-			// On regarde les voisins
-			for (Edge edge : node.getEdges()) {
-				nghbg = edge.getNode(node);
-				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
-					queue.offer(nghbg);
-					nghbg.setMark(true);
-					nghbg.setPred(node);
-				}
-            }
-        }
-		return dst.getMark();
-	}
-	
 	private boolean BFS(Node src, Node dst) {
 		resetNodesMark();
 		LinkedList<Node> queue = new LinkedList<>();
@@ -99,17 +76,20 @@ public class Main {
 		Node node, nghbg = null;
 		while (!queue.isEmpty()) {
             node = queue.poll();
-			
 			// On regarde les voisins
 			for (Edge edge : node.getEdges()) {
 				nghbg = edge.getNode(node);
-				if (!nghbg.getMark()) {
+				//System.out.println("Node : " + nghbg);
+				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
+					//System.out.println("Node : " + nghbg);
+					//System.out.println(edge.getResCap(node));
 				}
             }
         }
+		//System.out.println("Path : " + nghbg);
 		return dst.getMark();
 	}
 	
@@ -146,7 +126,7 @@ public class Main {
 				//System.out.println(edge);
 			}
 		}
-		//extractCut(src, dst);
+		
 		return max_flow;
 	}
 
