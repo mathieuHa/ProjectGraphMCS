@@ -47,7 +47,7 @@ public class Main {
 		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 		graphe.writeEdgesV3("web/edges.js");
 		graphe.writeNodes("web/nodes.js");
-		graphe.writeBlock("web/block.js", new ArrayList<Coord>()); // to fill HERE
+		graphe.writeBlock("web/block.js", extractCut(graphe.getNodeSrc())); // to fill HERE
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
@@ -59,6 +59,33 @@ public class Main {
         //graphe.testDist();
 
         System.out.println("IT WORKS");
+	}
+	
+	private ArrayList<Coord> extractCut(Node src) {
+		resetNodesMark();
+		ArrayList<Coord> coords = new ArrayList<>();
+		LinkedList<Node> queue = new LinkedList<>();
+		queue.offer(src);
+		src.setMark(true);
+
+		Node node, nghbg = null;
+		while (!queue.isEmpty()) {
+            node = queue.poll();
+			// On regarde les voisins
+			for (Edge edge : node.getEdges()) {
+				nghbg = edge.getNode(node);
+				if (!nghbg.getMark()) {
+					nghbg.setMark(true);
+					if(edge.getResCap(node) > 0)
+						queue.offer(nghbg);
+					else
+						coords.add(node.getPos());
+				}
+            }
+        }
+		
+		System.out.println("Point de cut trouvé : " +coords.size());
+		return coords;
 	}
 
 	// Remet la marque de tous les noeuds à false.
@@ -81,17 +108,13 @@ public class Main {
 			// On regarde les voisins
 			for (Edge edge : node.getEdges()) {
 				nghbg = edge.getNode(node);
-				//System.out.println("Node : " + nghbg);
 				if (!nghbg.getMark() && (edge.getResCap(node) > 0)) {
 					queue.offer(nghbg);
 					nghbg.setMark(true);
 					nghbg.setPred(node);
-					//System.out.println("Node : " + nghbg);
-					//System.out.println(edge.getResCap(node));
 				}
             }
         }
-		//System.out.println("Path : " + nghbg);
 		return dst.getMark();
 	}
 	
@@ -109,9 +132,7 @@ public class Main {
 			node = dst;
 			while (node.getId() != src.getId()) {
 				edge = node.getEdge(node.getPred());
-				//System.out.println(edge.getResCap(node.getPred()));
 				path_flow = Math.min(path_flow, edge.getResCap(node.getPred()));
-				//path_flow = Math.min(path_flow, edge.getResCap(node));
 				node = node.getPred();
 			}
 			System.out.println("PathFlow : " +path_flow);
@@ -125,7 +146,6 @@ public class Main {
 				edge = node.getEdge(node.getPred());
 				edge.incFlow(path_flow);
 				node = node.getPred();
-				//System.out.println(edge);
 			}
 		}
 		
