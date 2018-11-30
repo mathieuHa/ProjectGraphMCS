@@ -63,24 +63,25 @@ public class Main {
 	}
 	
 	private ArrayList<Coord> extractCut(Node src) {
-		resetNodesMark();
+		graphe.resetNodesMark();
 		ArrayList<Coord> coords = new ArrayList<>();
 		LinkedList<Node> queue = new LinkedList<>();
 		queue.offer(src);
 		src.setMark(true);
-
+		//Edge twin;
 		Node node, nghbg = null;
 		while (!queue.isEmpty()) {
             node = queue.poll();
 			// On regarde les voisins
 			for (Edge edge : node.getEdges()) {
 				nghbg = edge.getNode(node);
-				if (!nghbg.getMark()) {
+				//twin = graphe.getTwin(edge);
+				if (!nghbg.getMark() && edge.getSrc().getId() == node.getId()) {
 					nghbg.setMark(true);
-					if(edge.getResCap(node) > 0)
-						queue.offer(nghbg);
+					if (edge.getResidualCapacity() == 0)
+						coords.add(edge.getPointList().get(edge.getPointList().size()/2));
 					else
-						coords.add(node.getPos());
+						queue.offer(nghbg);
 				}
             }
         }
@@ -88,17 +89,9 @@ public class Main {
 		System.out.println("Point de cut trouvé : " +coords.size());
 		return coords;
 	}
-
-	// Remet la marque de tous les noeuds à false.
-	private void resetNodesMark() {
-		for (Map.Entry me : graphe.getListNode().entrySet()) {
-			Node node = (Node) me.getValue();
-			node.setMark(false);
-		}
-	}
 	
 	private boolean BFS(Node src, Node dst) {
-		resetNodesMark();
+		graphe.resetNodesMark();
 		LinkedList<Node> queue = new LinkedList<>();
 		queue.offer(src);
 		src.setMark(true);

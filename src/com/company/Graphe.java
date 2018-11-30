@@ -326,10 +326,21 @@ public class Graphe {
     // écrit dans le fichier edges la liste des arrêtes à afficher en utilisant toutes les coordonnées entres les src et dst pour plus de précision
     public void writeEdgesV3(String fileName) {
         int i = 0;
+		Edge twin;
         try (FileWriter fileWriter = new FileWriter(fileName, false)) {
-
+			
             for (Edge edge: listEdge){
-                if (!edge.getBorder().equals("link")){ // on écrit pas les arrêtes vers la source et le puit
+				twin = getTwin(edge);
+                if (!edge.getBorder().equals("link") && edge.getSrc().getId() != 10000 && edge.getDest().getId() != 0 && twin.getId() != -1){ // on écrit pas les arrêtes vers la source et le puit
+					edge.setId(-1);
+					if (twin != null) {
+						twin.setId(-1);
+						if(twin.getResidualCapacity() == 0)
+							edge = twin;
+						else {
+							edge.setFlow((edge.getFlow()+twin.getFlow())/2);
+						}
+					}
                     fileWriter.write("var linees = L.polyline(" +
                             "[");
                     int e = 0;
@@ -417,6 +428,14 @@ public class Graphe {
         }
 
     }
+	
+	// Remet la marque de tous les noeuds à false.
+	public void resetNodesMark() {
+		for (Map.Entry me : listNode.entrySet()) {
+			Node node = (Node) me.getValue();
+			node.setMark(false);
+		}
+	}
 
     // Calcul la distance entre deux coordonnées
     public double distanceCoord (Coord A, Coord B) {
@@ -447,6 +466,14 @@ public class Graphe {
     public void setNodeSrc(Node nodeSrc) {
         this.nodeSrc = nodeSrc;
     }
+	
+	public Edge getTwin(Edge edge) {
+		for (Edge e : listEdge) {
+			if (e.getId() == edge.getId() && !e.equals(edge))
+				return e;
+		}
+		return null;
+	}
 
     @Override
     public String toString() {
