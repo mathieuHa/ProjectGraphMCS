@@ -271,7 +271,7 @@ public class Graphe {
             for (Map.Entry node: listNode.entrySet()){
                 Node nodeTmp = (Node) node.getValue();
                 if (nodeTmp.getPos() != null) {
-                    fileWriter.write("L.marker([" + nodeTmp.getPos().getLatitude() + ", " + nodeTmp.getPos().getLongitude() + "]).addTo(mymap).bindPopup('"+nodeTmp.getId()+"').openPopup();\n");
+                    fileWriter.write("L.marker([" + nodeTmp.getPos().getLatitude() + ", " + nodeTmp.getPos().getLongitude() + "]).addTo(mymap).bindPopup('"+nodeTmp.getId()+"');\n");
                     i++;
                     if (i!=listNode.size()){
                         //fileWriter.write(",\n");
@@ -353,6 +353,25 @@ public class Graphe {
                         fileWriter.write(",");
                     }*/
                 }
+            }
+
+        } catch (IOException e) {
+            System.err.println("Cannot write file " + fileName + " : " + e);
+        }
+    }
+
+    public void writeBlock(String fileName, ArrayList<Coord> listCoord){
+        int i = 0;
+        try (FileWriter fileWriter = new FileWriter(fileName, false)) {
+            fileWriter.write("var iconL = L.icon({\n" +
+                    "    iconUrl: 'icon.png',\n" +
+                    "\n" +
+                    "    iconSize:     [38, 95], // size of the icon\n" +
+                    "    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location\n" +
+                    "    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor\n" +
+                    "});");
+            for (Coord coord: listCoord){
+                    fileWriter.write("L.marker([" + coord.getLatitude() +","+coord.getLongitude()+"], {icon: iconL}).addTo(mymap);");
             }
 
         } catch (IOException e) {

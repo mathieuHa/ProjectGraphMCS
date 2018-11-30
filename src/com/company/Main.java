@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -8,13 +9,13 @@ public class Main {
 	private Graphe graphe;
 
 	public Main(){
-		graphe = new Graphe(2.5, 1, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
+		graphe = new Graphe(2, 0.5, Graphe.LAVAL_CENTER, Graphe.LAVAL_DATA);
 	}
 
 	public void start(){
 		graphe.cleanFiles();
 		System.out.println("Size before" + graphe.getListEdge().size());
-		//graphe.filterRelevant();
+		graphe.filterRelevant();
         System.out.println("Size middle" + graphe.getListEdge().size());
         //graphe.printEdgeList();
         //graphe.printNodeList();
@@ -43,14 +44,15 @@ public class Main {
         //Test test = new Test();
         //FordF f = new FordF(graphe);
         //f.execute();
-
+		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
 		graphe.writeEdgesV3("web/edges.js");
-		//graphe.writeNodes("web/nodes.js");
+		graphe.writeNodes("web/nodes.js");
+		graphe.writeBlock("web/block.js", new ArrayList<Coord>()); // to fill HERE
 
 		//graphe.getNodeSrc().setId(1);
 		//graphe.getNodeDst().setId(2);
 		//System.out.println(graphe.getNodeSrc() + "\n" + graphe.getNodeDst());
-		System.out.println("MaxFlow : " + fordF(graphe.getNodeSrc(), graphe.getNodeDst()));
+
 
         //BFS bfs = new BFS(graphe);
 
